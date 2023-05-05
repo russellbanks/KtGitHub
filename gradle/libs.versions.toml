@@ -1,5 +1,5 @@
 [versions]
-coroutines = "1.6.4"
+coroutines = "1.7.0"
 koin = "3.4.0"
 kotest = "5.6.1"
 kotest-extensions-ktor = "2.0.0"
