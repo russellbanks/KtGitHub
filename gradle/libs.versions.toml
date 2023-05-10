@@ -1,7 +1,7 @@
 [versions]
 coroutines = "1.7.0"
 koin = "3.4.0"
-kotest = "5.6.1"
+kotest = "5.6.2"
 kotest-extensions-ktor = "2.0.0"
 kotlin = "1.8.21"
 kotlinx-datetime = "0.4.0"
