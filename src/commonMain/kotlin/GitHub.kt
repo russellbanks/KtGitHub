@@ -26,6 +26,7 @@ import objects.GHRepository
 import objects.GHTree
 import objects.GHUser
 import objects.GitHubObject
+import objects.GHRateLimitOverview
 import objects.sorts.ParameterConstants
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -484,6 +485,8 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
             append(ParameterConstants.page, page.toString())
         }
     }
+
+    public suspend fun fetchRateLimit(): GHResult<GHRateLimitOverview> = getWithConfig("$apiUrl/rate_limit")
 
     override fun close() {
         koin.close()
