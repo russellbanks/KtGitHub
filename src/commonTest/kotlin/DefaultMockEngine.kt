@@ -1,4 +1,5 @@
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
@@ -68,15 +69,6 @@ fun MockRequestHandleScope.respondForbidden() = respond(
     headers = headersOf(HttpHeaders.ContentType, GHJson.toString())
 )
 
-@OptIn(ExperimentalSerializationApi::class)
-fun createGitHub(mockEngine: MockEngine): GitHub = GitHub.new {
+fun createGitHub(mockEngine: MockEngine): GitHub = GitHub.new(mockEngine) {
     stopKoin()
-    client = HttpClient(mockEngine) {
-        install(ContentNegotiation) {
-            json(Json {
-                namingStrategy = JsonNamingStrategy.SnakeCase
-                ignoreUnknownKeys = true
-            })
-        }
-    }
 }

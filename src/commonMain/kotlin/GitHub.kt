@@ -1,5 +1,7 @@
 
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -32,7 +34,8 @@ import org.koin.dsl.module
 @OptIn(ExperimentalStdlibApi::class)
 public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constructor(
     internal var token: String?,
-    internal var client: HttpClient = HttpClient {
+    internal var engine: HttpClientEngine,
+    internal var client: HttpClient = HttpClient(engine) {
         install(ContentNegotiation) {
             json(Json {
                 namingStrategy = JsonNamingStrategy.SnakeCase
@@ -43,7 +46,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         install(Logging) {
             logger = object: Logger {
                 override fun log(message: String) {
-                    println(message)
+                    // println(message)
                 }
             }
             level = LogLevel.BODY
@@ -489,7 +492,9 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
 
     public companion object {
         public const val apiUrl: String = "https://api.github.com"
-        public fun new(init: GitHubBuilder.() -> Unit): GitHub = GitHubBuilder().apply(init).build()
+        public fun new(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit): GitHub {
+            return GitHubBuilder().apply(init).build(engine)
+        }
     }
 }
 

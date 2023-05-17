@@ -43,14 +43,14 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.ktor.client.contentnegotiation)
-                implementation(libs.ktor.serialization.json)
-                implementation(libs.ktor.client.core)
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlinx.datetime)
+                api(libs.ktor.client.contentnegotiation)
+                api(libs.ktor.serialization.json)
+                api(libs.ktor.client.core)
+                api(libs.kotlinx.coroutines.core)
+                api(libs.kotlinx.serialization.json)
+                api(libs.kotlinx.datetime)
                 implementation(libs.ktor.client.logging)
-                implementation(libs.koin.core)
+                api(libs.koin.core)
             }
         }
         val commonTest by getting {
