@@ -25,7 +25,7 @@ kotlin {
     linuxX64()
     macosX64()
     mingwX64()
-    val publicationsFromMainHost =
+    /* val publicationsFromMainHost =
         listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
     publishing {
         publications {
@@ -36,7 +36,7 @@ kotlin {
                     .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
             }
         }
-    }
+    } */
 
     sourceSets {
         val commonMain by getting {
