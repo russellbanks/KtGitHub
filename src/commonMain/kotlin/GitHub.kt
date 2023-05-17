@@ -495,6 +495,10 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         public fun new(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit): GitHub {
             return GitHubBuilder().apply(init).build(engine)
         }
+
+        public fun new(engine: HttpClientEngineFactory<*>, init: GitHubBuilder.() -> Unit): GitHub {
+            return GitHubBuilder().apply(init).build(engine.create())
+        }
     }
 }
 
