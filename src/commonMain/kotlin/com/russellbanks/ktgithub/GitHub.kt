@@ -1,7 +1,5 @@
 package com.russellbanks.ktgithub
 
-import com.russellbanks.ktgithub.GHResult
-import com.russellbanks.ktgithub.GitHubBuilder
 import com.russellbanks.ktgithub.objects.GHBranch
 import com.russellbanks.ktgithub.objects.GHCommitResponse
 import com.russellbanks.ktgithub.objects.GHContent
@@ -36,7 +34,9 @@ import kotlinx.serialization.json.JsonNamingStrategy
 @OptIn(ExperimentalStdlibApi::class)
 public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constructor(
     internal var token: String?,
-    private var engine: HttpClientEngine,
+    engine: HttpClientEngine,
+    logger: (String) -> Unit = {},
+    logLevel: LogLevel = LogLevel.INFO,
     internal var client: HttpClient = HttpClient(engine) {
         install(ContentNegotiation) {
             json(Json {
@@ -46,12 +46,12 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
             })
         }
         install(Logging) {
-            logger = object: Logger {
+            this.logger = object: Logger {
                 override fun log(message: String) {
-                    // println(message)
+                    logger(message)
                 }
             }
-            level = LogLevel.BODY
+            level = logLevel
         }
     }
 ): AutoCloseable, GitHubObject() {
