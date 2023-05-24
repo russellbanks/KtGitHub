@@ -10,6 +10,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import kotlin.native.concurrent.ThreadLocal
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -483,8 +484,10 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         client.close()
     }
 
+    @ThreadLocal
     public companion object {
         public const val apiUrl: String = "https://api.github.com"
+
         private var INSTANCE: GitHub? = null
 
         internal fun getInstance(): GitHub {
