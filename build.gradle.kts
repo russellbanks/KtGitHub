@@ -27,18 +27,6 @@ kotlin {
     linuxX64()
     macosX64()
     mingwX64()
-    /* val publicationsFromMainHost =
-        listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
-    publishing {
-        publications {
-            matching { it.name in publicationsFromMainHost }.all {
-                val targetPublication = this@all
-                tasks.withType<AbstractPublishToMaven>()
-                    .matching { it.publication == targetPublication }
-                    .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
-            }
-        }
-    } */
 
     sourceSets {
         val commonMain by getting {
@@ -50,7 +38,6 @@ kotlin {
                 api(libs.kotlinx.serialization.json)
                 api(libs.kotlinx.datetime)
                 implementation(libs.ktor.client.logging)
-                api(libs.koin.core)
             }
         }
         val commonTest by getting {

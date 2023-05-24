@@ -20,22 +20,19 @@ import objects.GHContent
 import objects.GHGitIgnoreTemplate
 import objects.GHIssue
 import objects.GHLicense
+import objects.GHRateLimitOverview
 import objects.GHRef
 import objects.GHRelease
 import objects.GHRepository
 import objects.GHTree
 import objects.GHUser
 import objects.GitHubObject
-import objects.GHRateLimitOverview
 import objects.sorts.ParameterConstants
-import org.koin.core.KoinApplication
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
 
 @OptIn(ExperimentalStdlibApi::class)
 public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constructor(
     internal var token: String?,
-    internal var engine: HttpClientEngine,
+    private var engine: HttpClientEngine,
     internal var client: HttpClient = HttpClient(engine) {
         install(ContentNegotiation) {
             json(Json {
@@ -55,16 +52,6 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
     }
 ): AutoCloseable, GitHubObject() {
     override val root: GitHub = this
-
-    private val koin: KoinApplication = startKoin {
-        modules(
-            module {
-                single {
-                    this@GitHub
-                }
-            }
-        )
-    }
 
     /**
      * Fetches the repository data from GitHub for a given owner and repository name.
@@ -486,21 +473,33 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         }
     }
 
+    public suspend fun fetchLatestRelease(owner: String, repository: String): GHResult<GHRelease> {
+        return getWithConfig("$apiUrl/repos/$owner/$repository/releases/latest")
+    }
+
     public suspend fun fetchRateLimit(): GHResult<GHRateLimitOverview> = getWithConfig("$apiUrl/rate_limit")
 
     override fun close() {
-        koin.close()
         client.close()
     }
 
     public companion object {
         public const val apiUrl: String = "https://api.github.com"
-        public fun new(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit = {}): GitHub {
-            return GitHubBuilder().apply(init).build(engine)
+        private var INSTANCE: GitHub? = null
+
+        internal fun getInstance(): GitHub {
+            check(INSTANCE != null) { "GitHub is not initialized, call create() before using it." }
+            return INSTANCE!!
         }
 
-        public fun new(engine: HttpClientEngineFactory<*>, init: GitHubBuilder.() -> Unit = {}): GitHub {
-            return GitHubBuilder().apply(init).build(engine.create())
+        public fun create(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit = {}): GitHub {
+            INSTANCE = GitHubBuilder().apply(init).build(engine)
+            return INSTANCE!!
+        }
+
+        public fun create(engine: HttpClientEngineFactory<*>, init: GitHubBuilder.() -> Unit = {}): GitHub {
+            INSTANCE = GitHubBuilder().apply(init).build(engine.create())
+            return INSTANCE!!
         }
     }
 }

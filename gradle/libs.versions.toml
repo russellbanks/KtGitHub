@@ -1,6 +1,5 @@
 [versions]
 coroutines = "1.7.1"
-koin = "3.4.0"
 kotest = "5.6.2"
 kotest-extensions-ktor = "2.0.0"
 kotlin = "1.8.21"
@@ -10,8 +9,6 @@ ktor = "2.3.0"
 slf4j = "2.0.7"
 
 [libraries]
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-
 kotest-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }

@@ -96,7 +96,7 @@ public class GHRepository internal constructor(
     public val pushedAt: Instant,
     public val createdAt: Instant,
     public val updatedAt: Instant,
-    // val permissions: Set<Permission>
+    // val permissions: List<Permission>
     @SerialName("allow_rebase_merge") public val rebaseMergeAllowed: Boolean
 ) : GitHubObject() {
     public suspend fun fetchCommits(): GHResult<List<GHCommit>> = getWithConfig(commitsUrl.removeCurlyBraces())
@@ -108,14 +108,14 @@ public class GHRepository internal constructor(
         permission: Permission? = null,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<Set<GHUser>> = fetchUsersFromUrl(collaboratorsUrl, affiliation, permission, perPage, page)
+    ): GHResult<List<GHUser>> = fetchUsersFromUrl(collaboratorsUrl, affiliation, permission, perPage, page)
 
     public suspend fun fetchContributors(
         affiliation: Affiliation = Affiliation.ALL,
         permission: Permission? = null,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<Set<GHUser>> = fetchUsersFromUrl(contributorsUrl, affiliation, permission, perPage, page)
+    ): GHResult<List<GHUser>> = fetchUsersFromUrl(contributorsUrl, affiliation, permission, perPage, page)
 
     private suspend fun fetchUsersFromUrl(
         urlString: String,
@@ -123,7 +123,7 @@ public class GHRepository internal constructor(
         permission: Permission? = null,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<Set<GHUser>> = getWithConfig(urlString.removeCurlyBraces()) {
+    ): GHResult<List<GHUser>> = getWithConfig(urlString.removeCurlyBraces()) {
         url.parameters.apply {
             append(ParameterConstants.affiliation, affiliation.toString())
             permission?.let { append(ParameterConstants.permission, it.toString()) }
@@ -138,7 +138,7 @@ public class GHRepository internal constructor(
         since: Instant? = null,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<Set<GHComment>> {
+    ): GHResult<List<GHComment>> {
         return getWithConfig(commentsUrl) {
             url.parameters.apply {
                 append(ParameterConstants.sort, sort.toString())
@@ -154,7 +154,7 @@ public class GHRepository internal constructor(
         sort: RepositorySort = RepositorySort.NEWEST,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<Set<GHRepository>> = getWithConfig(forksUrl) {
+    ): GHResult<List<GHRepository>> = getWithConfig(forksUrl) {
         url.parameters.apply {
             append(ParameterConstants.sort, sort.toString())
             append(ParameterConstants.perPage, perPage.toString())

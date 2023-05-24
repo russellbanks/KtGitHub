@@ -8,7 +8,6 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.utils.io.ByteReadChannel
-import org.koin.core.context.stopKoin
 
 val defaultMockEngine = MockEngine { request ->
     val pathSegments = request.url.pathSegments.filterNot(String::isEmpty)
@@ -62,6 +61,4 @@ fun MockRequestHandleScope.respondForbidden() = respond(
     headers = headersOf(HttpHeaders.ContentType, GHJson.toString())
 )
 
-fun createGitHub(mockEngine: MockEngine): GitHub = GitHub.new(mockEngine) {
-    stopKoin()
-}
+fun createGitHub(mockEngine: MockEngine): GitHub = GitHub.create(mockEngine)

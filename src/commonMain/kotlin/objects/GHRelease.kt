@@ -24,11 +24,11 @@ public class GHRelease(
     public val publishedAt: Instant?,
     public val author: GHUser,
     public val assets: List<GHAsset>,
-    public val bodyHtml: String,
-    public val bodyText: String,
-    public val mentionsCount: Int,
-    public val discussionUrl: String,
-    public val reactions: Reactions
+    public val bodyHtml: String? = null,
+    public val bodyText: String? = null,
+    public val mentionsCount: Int? = null,
+    public val discussionUrl: String? = null,
+    public val reactions: Reactions? = null
 ) {
     @Serializable
     public class Reactions(

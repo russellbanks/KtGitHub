@@ -19,11 +19,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlinx.datetime.LocalDate
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-public abstract class GitHubObject : KoinComponent {
-    public open val root: GitHub by inject()
+public abstract class GitHubObject {
+    public open val root: GitHub get() = GitHub.getInstance()
 
     private val githubApiVersion = LocalDate(2022, 11, 28)
 
