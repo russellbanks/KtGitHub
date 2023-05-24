@@ -495,11 +495,11 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
 
     public companion object {
         public const val apiUrl: String = "https://api.github.com"
-        public fun new(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit): GitHub {
+        public fun new(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit = {}): GitHub {
             return GitHubBuilder().apply(init).build(engine)
         }
 
-        public fun new(engine: HttpClientEngineFactory<*>, init: GitHubBuilder.() -> Unit): GitHub {
+        public fun new(engine: HttpClientEngineFactory<*>, init: GitHubBuilder.() -> Unit = {}): GitHub {
             return GitHubBuilder().apply(init).build(engine.create())
         }
     }
