@@ -3,6 +3,7 @@ package com.russellbanks.ktgithub
 import com.russellbanks.ktgithub.objects.GHBranch
 import com.russellbanks.ktgithub.objects.GHCommitResponse
 import com.russellbanks.ktgithub.objects.GHContent
+import com.russellbanks.ktgithub.objects.GHGist
 import com.russellbanks.ktgithub.objects.GHGitIgnoreTemplate
 import com.russellbanks.ktgithub.objects.GHIssue
 import com.russellbanks.ktgithub.objects.GHLicense
@@ -486,6 +487,10 @@ public class GitHub internal constructor(
     }
 
     public suspend fun fetchRateLimit(): GHResult<GHRateLimitOverview> = getWithConfig("$API_URL/rate_limit")
+
+    public suspend fun fetchGist(gistId: String): GHResult<GHGist> = getWithConfig("$API_URL/gists/$gistId")
+
+    public suspend fun deleteGist(gistId: String): GHResult<Unit> = deleteWithConfig("$API_URL/gists/$gistId")
 
     override fun close() {
         client.close()
