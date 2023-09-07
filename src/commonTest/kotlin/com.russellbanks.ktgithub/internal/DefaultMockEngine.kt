@@ -15,7 +15,7 @@ import io.ktor.utils.io.ByteReadChannel
 
 val defaultMockEngine = MockEngine { request ->
     val pathSegments = request.url.pathSegments.filterNot(String::isEmpty)
-    if (!request.url.toString().startsWith(GitHub.apiUrl)) respondBadRequest()
+    if (!request.url.toString().startsWith(GitHub.API_URL)) respondBadRequest()
     when {
         pathSegments.first() == "repos" -> when {
             pathSegments.takeLast(2) == listOf("octocat", "Hello-World") -> when (request.method) {

@@ -1,11 +1,12 @@
 package com.russellbanks.ktgithub.objects
 
+import dev.drewhamilton.poko.Poko
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public class GHRelease(
+@Poko public class GHRelease(
     public val url: String,
     public val htmlUrl: String,
     public val assetsUrl: String,
@@ -31,7 +32,7 @@ public class GHRelease(
     public val reactions: Reactions? = null
 ) {
     @Serializable
-    public class Reactions(
+    @Poko public class Reactions(
         public val url: String,
         public val totalCount: Int,
         @SerialName("+1") public val upvotes: Int,

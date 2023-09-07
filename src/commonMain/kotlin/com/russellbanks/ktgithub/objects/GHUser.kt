@@ -3,12 +3,13 @@ package com.russellbanks.ktgithub.objects
 import com.russellbanks.ktgithub.ApiException
 import com.russellbanks.ktgithub.GHResult
 import com.russellbanks.ktgithub.objects.sorts.SinceSort
+import dev.drewhamilton.poko.Poko
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public class GHUser(
+@Poko public class GHUser(
     public val name: String? = null,
     public val email: String? = null,
     public val login: String,
@@ -74,82 +75,4 @@ public class GHUser(
      * or an [ApiException] containing the status code in case of a failure.
      */
     public suspend fun fetchOrganizations(): GHResult<List<GHOrganization>> = getWithConfig(organizationsUrl)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as GHUser
-
-        if (name != other.name) return false
-        if (email != other.email) return false
-        if (login != other.login) return false
-        if (id != other.id) return false
-        if (htmlUrl != other.htmlUrl) return false
-        if (avatarUrl != other.avatarUrl) return false
-        if (followersUrl != other.followersUrl) return false
-        if (followingUrl != other.followingUrl) return false
-        if (gistsUrl != other.gistsUrl) return false
-        if (starredUrl != other.starredUrl) return false
-        if (subscriptionsUrl != other.subscriptionsUrl) return false
-        if (organizationsUrl != other.organizationsUrl) return false
-        if (reposUrl != other.reposUrl) return false
-        if (eventsUrl != other.eventsUrl) return false
-        if (receivedEventsUrl != other.receivedEventsUrl) return false
-        if (type != other.type) return false
-        if (sideAdmin != other.sideAdmin) return false
-        if (url != other.url) return false
-        if (company != other.company) return false
-        if (blogUrl != other.blogUrl) return false
-        if (location != other.location) return false
-        if (isHireable != other.isHireable) return false
-        if (bio != other.bio) return false
-        if (twitterUsername != other.twitterUsername) return false
-        if (publicRepositoriesCount != other.publicRepositoriesCount) return false
-        if (publicGistsCount != other.publicGistsCount) return false
-        if (followersCount != other.followersCount) return false
-        if (followingCount != other.followingCount) return false
-        if (createdAt != other.createdAt) return false
-        if (updatedAt != other.updatedAt) return false
-        return privateGistsCount == other.privateGistsCount
-    }
-
-    override fun hashCode(): Int {
-        var result = name?.hashCode() ?: 0
-        result = 31 * result + (email?.hashCode() ?: 0)
-        result = 31 * result + login.hashCode()
-        result = 31 * result + id
-        result = 31 * result + htmlUrl.hashCode()
-        result = 31 * result + avatarUrl.hashCode()
-        result = 31 * result + followersUrl.hashCode()
-        result = 31 * result + followingUrl.hashCode()
-        result = 31 * result + gistsUrl.hashCode()
-        result = 31 * result + starredUrl.hashCode()
-        result = 31 * result + subscriptionsUrl.hashCode()
-        result = 31 * result + organizationsUrl.hashCode()
-        result = 31 * result + reposUrl.hashCode()
-        result = 31 * result + eventsUrl.hashCode()
-        result = 31 * result + receivedEventsUrl.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + (sideAdmin?.hashCode() ?: 0)
-        result = 31 * result + url.hashCode()
-        result = 31 * result + (company?.hashCode() ?: 0)
-        result = 31 * result + (blogUrl?.hashCode() ?: 0)
-        result = 31 * result + (location?.hashCode() ?: 0)
-        result = 31 * result + (isHireable?.hashCode() ?: 0)
-        result = 31 * result + (bio?.hashCode() ?: 0)
-        result = 31 * result + (twitterUsername?.hashCode() ?: 0)
-        result = 31 * result + (publicRepositoriesCount ?: 0)
-        result = 31 * result + (publicGistsCount ?: 0)
-        result = 31 * result + (followersCount ?: 0)
-        result = 31 * result + (followingCount ?: 0)
-        result = 31 * result + (createdAt?.hashCode() ?: 0)
-        result = 31 * result + (updatedAt?.hashCode() ?: 0)
-        result = 31 * result + (privateGistsCount ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "GHUser(name=$name, email=$email, login='$login', id=$id, htmlUrl='$htmlUrl', avatarUrl='$avatarUrl', followersUrl='$followersUrl', followingUrl='$followingUrl', gistsUrl='$gistsUrl', starredUrl='$starredUrl', subscriptionsUrl='$subscriptionsUrl', organizationsUrl='$organizationsUrl', reposUrl='$reposUrl', eventsUrl='$eventsUrl', receivedEventsUrl='$receivedEventsUrl', type='$type', sideAdmin=$sideAdmin, url='$url', company=$company, blogUrl=$blogUrl, location=$location, isHireable=$isHireable, bio=$bio, twitterUsername=$twitterUsername, publicRepositoriesCount=$publicRepositoriesCount, publicGistsCount=$publicGistsCount, followersCount=$followersCount, followingCount=$followingCount, createdAt=$createdAt, updatedAt=$updatedAt, privateGistsCount=$privateGistsCount)"
-    }
 }

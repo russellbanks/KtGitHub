@@ -5,6 +5,7 @@ import com.russellbanks.ktgithub.GHResult
 import com.russellbanks.ktgithub.objects.sorts.ParameterConstants
 import com.russellbanks.ktgithub.objects.sorts.RepositorySort
 import com.russellbanks.ktgithub.objects.sorts.SinceSort
+import dev.drewhamilton.poko.Poko
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpStatusCode
 import kotlinx.datetime.Instant
@@ -12,7 +13,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public class GHRepository internal constructor(
+@Poko public class GHRepository internal constructor(
     /**
      * The name of the repository.
      */
@@ -310,160 +311,4 @@ public class GHRepository internal constructor(
     }
 
     private fun String.removeCurlyBraces(): String = replace("\\{.*?}".toRegex(), "")
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as GHRepository
-
-        if (name != other.name) return false
-        if (fullName != other.fullName) return false
-        if (owner != other.owner) return false
-        if (private != other.private) return false
-        if (htmlUrl != other.htmlUrl) return false
-        if (description != other.description) return false
-        if (isFork != other.isFork) return false
-        if (url != other.url) return false
-        if (archiveUrl != other.archiveUrl) return false
-        if (assigneesUrl != other.assigneesUrl) return false
-        if (blobsUrl != other.blobsUrl) return false
-        if (branchesUrl != other.branchesUrl) return false
-        if (collaboratorsUrl != other.collaboratorsUrl) return false
-        if (commentsUrl != other.commentsUrl) return false
-        if (commitsUrl != other.commitsUrl) return false
-        if (compareUrl != other.compareUrl) return false
-        if (contentsUrl != other.contentsUrl) return false
-        if (contributorsUrl != other.contributorsUrl) return false
-        if (deploymentsUrl != other.deploymentsUrl) return false
-        if (downloadsUrl != other.downloadsUrl) return false
-        if (eventsUrl != other.eventsUrl) return false
-        if (forksUrl != other.forksUrl) return false
-        if (gitCommitsUrl != other.gitCommitsUrl) return false
-        if (gitRefsUrl != other.gitRefsUrl) return false
-        if (gitTagsUrl != other.gitTagsUrl) return false
-        if (gitUrl != other.gitUrl) return false
-        if (issueCommentUrl != other.issueCommentUrl) return false
-        if (issueEventsUrl != other.issueEventsUrl) return false
-        if (issuesUrl != other.issuesUrl) return false
-        if (keysUrl != other.keysUrl) return false
-        if (labelsUrl != other.labelsUrl) return false
-        if (languagesUrl != other.languagesUrl) return false
-        if (mergedUrl != other.mergedUrl) return false
-        if (milestonesUrl != other.milestonesUrl) return false
-        if (notificationsUrl != other.notificationsUrl) return false
-        if (pullsUrl != other.pullsUrl) return false
-        if (releasesUrl != other.releasesUrl) return false
-        if (sshUrl != other.sshUrl) return false
-        if (stargazersUrl != other.stargazersUrl) return false
-        if (statusesUrl != other.statusesUrl) return false
-        if (subscribersUrl != other.subscribersUrl) return false
-        if (subscriptionUrl != other.subscriptionUrl) return false
-        if (tagsUrl != other.tagsUrl) return false
-        if (teamsUrl != other.teamsUrl) return false
-        if (treesUrl != other.treesUrl) return false
-        if (cloneUrl != other.cloneUrl) return false
-        if (mirrorUrl != other.mirrorUrl) return false
-        if (hooksUrl != other.hooksUrl) return false
-        if (svnUrl != other.svnUrl) return false
-        if (homePage != other.homePage) return false
-        if (language != other.language) return false
-        if (forksCount != other.forksCount) return false
-        if (stargazersCount != other.stargazersCount) return false
-        if (watchersCount != other.watchersCount) return false
-        if (size != other.size) return false
-        if (defaultBranch != other.defaultBranch) return false
-        if (openIssuesCount != other.openIssuesCount) return false
-        if (isTemplate != other.isTemplate) return false
-        if (topics != other.topics) return false
-        if (hasIssues != other.hasIssues) return false
-        if (hasProjects != other.hasProjects) return false
-        if (hasWiki != other.hasWiki) return false
-        if (hasPages != other.hasPages) return false
-        if (hasDownloads != other.hasDownloads) return false
-        if (hasDiscussions != other.hasDiscussions) return false
-        if (archived != other.archived) return false
-        if (isDisabled != other.isDisabled) return false
-        if (visibility != other.visibility) return false
-        if (pushedAt != other.pushedAt) return false
-        if (createdAt != other.createdAt) return false
-        if (updatedAt != other.updatedAt) return false
-        return rebaseMergeAllowed == other.rebaseMergeAllowed
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + fullName.hashCode()
-        result = 31 * result + owner.hashCode()
-        result = 31 * result + private.hashCode()
-        result = 31 * result + htmlUrl.hashCode()
-        result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + isFork.hashCode()
-        result = 31 * result + url.hashCode()
-        result = 31 * result + archiveUrl.hashCode()
-        result = 31 * result + assigneesUrl.hashCode()
-        result = 31 * result + blobsUrl.hashCode()
-        result = 31 * result + branchesUrl.hashCode()
-        result = 31 * result + collaboratorsUrl.hashCode()
-        result = 31 * result + commentsUrl.hashCode()
-        result = 31 * result + commitsUrl.hashCode()
-        result = 31 * result + compareUrl.hashCode()
-        result = 31 * result + contentsUrl.hashCode()
-        result = 31 * result + contributorsUrl.hashCode()
-        result = 31 * result + deploymentsUrl.hashCode()
-        result = 31 * result + downloadsUrl.hashCode()
-        result = 31 * result + eventsUrl.hashCode()
-        result = 31 * result + forksUrl.hashCode()
-        result = 31 * result + gitCommitsUrl.hashCode()
-        result = 31 * result + gitRefsUrl.hashCode()
-        result = 31 * result + gitTagsUrl.hashCode()
-        result = 31 * result + gitUrl.hashCode()
-        result = 31 * result + issueCommentUrl.hashCode()
-        result = 31 * result + issueEventsUrl.hashCode()
-        result = 31 * result + issuesUrl.hashCode()
-        result = 31 * result + keysUrl.hashCode()
-        result = 31 * result + labelsUrl.hashCode()
-        result = 31 * result + languagesUrl.hashCode()
-        result = 31 * result + (mergedUrl?.hashCode() ?: 0)
-        result = 31 * result + milestonesUrl.hashCode()
-        result = 31 * result + notificationsUrl.hashCode()
-        result = 31 * result + pullsUrl.hashCode()
-        result = 31 * result + releasesUrl.hashCode()
-        result = 31 * result + sshUrl.hashCode()
-        result = 31 * result + stargazersUrl.hashCode()
-        result = 31 * result + statusesUrl.hashCode()
-        result = 31 * result + subscribersUrl.hashCode()
-        result = 31 * result + subscriptionUrl.hashCode()
-        result = 31 * result + tagsUrl.hashCode()
-        result = 31 * result + teamsUrl.hashCode()
-        result = 31 * result + treesUrl.hashCode()
-        result = 31 * result + cloneUrl.hashCode()
-        result = 31 * result + (mirrorUrl?.hashCode() ?: 0)
-        result = 31 * result + hooksUrl.hashCode()
-        result = 31 * result + svnUrl.hashCode()
-        result = 31 * result + (homePage?.hashCode() ?: 0)
-        result = 31 * result + (language?.hashCode() ?: 0)
-        result = 31 * result + forksCount
-        result = 31 * result + stargazersCount
-        result = 31 * result + watchersCount
-        result = 31 * result + size
-        result = 31 * result + defaultBranch.hashCode()
-        result = 31 * result + openIssuesCount
-        result = 31 * result + isTemplate.hashCode()
-        result = 31 * result + topics.hashCode()
-        result = 31 * result + hasIssues.hashCode()
-        result = 31 * result + hasProjects.hashCode()
-        result = 31 * result + hasWiki.hashCode()
-        result = 31 * result + hasPages.hashCode()
-        result = 31 * result + hasDownloads.hashCode()
-        result = 31 * result + hasDiscussions.hashCode()
-        result = 31 * result + archived.hashCode()
-        result = 31 * result + isDisabled.hashCode()
-        result = 31 * result + visibility.hashCode()
-        result = 31 * result + pushedAt.hashCode()
-        result = 31 * result + createdAt.hashCode()
-        result = 31 * result + updatedAt.hashCode()
-        result = 31 * result + rebaseMergeAllowed.hashCode()
-        return result
-    }
 }

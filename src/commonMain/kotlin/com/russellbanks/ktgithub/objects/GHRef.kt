@@ -1,10 +1,11 @@
 package com.russellbanks.ktgithub.objects
 
 import com.russellbanks.ktgithub.GHResult
+import dev.drewhamilton.poko.Poko
 import kotlinx.serialization.Serializable
 
 @Serializable
-public class GHRef internal constructor(
+@Poko public class GHRef internal constructor(
     public val ref: String,
     public val nodeId: String,
     public val url: String,
@@ -28,28 +29,4 @@ public class GHRef internal constructor(
     }
 
     public suspend fun delete(): GHResult<Unit> = deleteWithConfig(url)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as GHRef
-
-        if (ref != other.ref) return false
-        if (nodeId != other.nodeId) return false
-        if (url != other.url) return false
-        return `object` == other.`object`
-    }
-
-    override fun hashCode(): Int {
-        var result = ref.hashCode()
-        result = 31 * result + nodeId.hashCode()
-        result = 31 * result + url.hashCode()
-        result = 31 * result + `object`.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "GHRef(ref='$ref', nodeId='$nodeId', url='$url', `object`=$`object`)"
-    }
 }

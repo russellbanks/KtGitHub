@@ -21,8 +21,7 @@ import io.ktor.http.isSuccess
 import kotlinx.datetime.LocalDate
 
 public abstract class GitHubObject {
-    public open val root: GitHub get() = GitHub.getInstance()
-
+    public lateinit var root: GitHub
     private val githubApiVersion = LocalDate(2022, 11, 28)
 
     internal suspend inline fun <reified T> getWithConfig(
@@ -31,7 +30,7 @@ public abstract class GitHubObject {
     ): GHResult<T> = root.client.get(urlString) {
         accept(GHJson)
         root.token?.let(::bearerAuth)
-        header(githubApiVersionHeader, githubApiVersion)
+        header(GITHUB_API_VERSION_HEADER, githubApiVersion)
         block()
     }.handleResponse()
 
@@ -42,7 +41,7 @@ public abstract class GitHubObject {
         accept(GHJson)
         contentType(ContentType.Application.Json)
         root.token?.let(::bearerAuth)
-        header(githubApiVersionHeader, githubApiVersion)
+        header(GITHUB_API_VERSION_HEADER, githubApiVersion)
         block()
     }.handleResponse()
 
@@ -53,7 +52,7 @@ public abstract class GitHubObject {
         accept(GHJson)
         contentType(ContentType.Application.Json)
         root.token?.let(::bearerAuth)
-        header(githubApiVersionHeader, githubApiVersion)
+        header(GITHUB_API_VERSION_HEADER, githubApiVersion)
         block()
     }.handleResponse()
 
@@ -64,18 +63,20 @@ public abstract class GitHubObject {
         accept(GHJson)
         contentType(ContentType.Application.Json)
         root.token?.let(::bearerAuth)
-        header(githubApiVersionHeader, githubApiVersion)
+        header(GITHUB_API_VERSION_HEADER, githubApiVersion)
         block()
     }.handleResponse()
 
-    internal suspend inline fun <reified T> HttpResponse.handleResponse(): GHResult<T> = GHResult(
-        when {
-            status.isSuccess() -> Result.success(body())
-            else -> Result.failure(ApiException(status, bodyAsText()))
-        }
-    )
+    internal suspend inline fun <reified T> HttpResponse.handleResponse(): GHResult<T> {
+        return GHResult(
+            when {
+                status.isSuccess() -> Result.success(body<T>().also { if (it is GitHubObject) it.root = root })
+                else -> Result.failure(ApiException(status, bodyAsText()))
+            }
+        )
+    }
 
     public companion object {
-        private const val githubApiVersionHeader = "X-GitHub-Api-Version"
+        private const val GITHUB_API_VERSION_HEADER = "X-GitHub-Api-Version"
     }
 }

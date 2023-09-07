@@ -6,6 +6,7 @@ kotlin = "1.9.10"
 kotlinx-datetime = "0.4.1"
 kotlinx-serialization = "1.6.0"
 ktor = "2.3.4"
+poko = "0.15.0"
 slf4j = "2.0.9"
 
 [libraries]
@@ -32,3 +33,4 @@ slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 kotlin = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+poko = { id = "dev.drewhamilton.poko", version.ref = "poko" }

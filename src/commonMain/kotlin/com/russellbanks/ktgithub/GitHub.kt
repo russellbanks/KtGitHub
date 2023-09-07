@@ -14,6 +14,7 @@ import com.russellbanks.ktgithub.objects.GHTree
 import com.russellbanks.ktgithub.objects.GHUser
 import com.russellbanks.ktgithub.objects.GitHubObject
 import com.russellbanks.ktgithub.objects.sorts.ParameterConstants
+import dev.drewhamilton.poko.Poko
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -25,18 +26,23 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
-import kotlin.native.concurrent.ThreadLocal
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy
 
 @OptIn(ExperimentalStdlibApi::class)
-public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constructor(
+public class GitHub internal constructor(
     internal var token: String?,
     engine: HttpClientEngine,
     logger: (String) -> Unit = {},
     logLevel: LogLevel = LogLevel.INFO,
+): AutoCloseable, GitHubObject() {
+    init {
+        root = this
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
     internal var client: HttpClient = HttpClient(engine) {
         install(ContentNegotiation) {
             json(Json {
@@ -54,8 +60,6 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
             level = logLevel
         }
     }
-): AutoCloseable, GitHubObject() {
-    override val root: GitHub = this
 
     /**
      * Fetches the repository data from GitHub for a given owner and repository name.
@@ -72,7 +76,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * - [HttpStatusCode.NotFound]: The repository does not exist.
      */
     public suspend fun fetchRepository(owner: String, repository: String): GHResult<GHRepository> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository")
+        return getWithConfig<GHRepository>("$API_URL/repos/$owner/$repository")
     }
 
     /**
@@ -95,7 +99,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * - [HttpStatusCode.NotFound]: The repository does not exist.
      */
     public suspend fun deleteRepository(owner: String, repository: String): GHResult<Unit> {
-        return deleteWithConfig("$apiUrl/repos/$owner/$repository")
+        return deleteWithConfig("$API_URL/repos/$owner/$repository")
     }
 
     /**
@@ -191,7 +195,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
             val allowForking: Boolean? = null,
             val webCommitSignoffRequired: Boolean? = null
         )
-        return patchWithConfig("$apiUrl/repos/$owner/$repository") {
+        return patchWithConfig("$API_URL/repos/$owner/$repository") {
             setBody(
                 UpdateRepositoryParameters(
                     name, description, homepage, private, hasIssues, hasProjects, hasWiki, isTemplate, defaultBranch,
@@ -203,7 +207,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
     }
 
     public suspend fun fetchDirectoryContent(owner: String, repository: String, path: String): GHResult<List<GHContent>> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/contents/$path")
+        return getWithConfig("$API_URL/repos/$owner/$repository/contents/$path")
     }
 
     /**
@@ -223,7 +227,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * or an [ApiException] in case of errors. Possible [ApiException] statuses include:
      * - [HttpStatusCode.NotFound]: The user with the specified username does not exist or the resource is not found.
      */
-    public suspend fun fetchUser(username: String): GHResult<GHUser> = getWithConfig("$apiUrl/users/$username")
+    public suspend fun fetchUser(username: String): GHResult<GHUser> = getWithConfig("$API_URL/users/$username")
 
     /**
      * Fetches a list of all emojis available for use on GitHub.
@@ -235,7 +239,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * - [HttpStatusCode.NotModified]: The request was successful, but the list of emojis has not been modified
      * since the last request.
      */
-    public suspend fun fetchAllEmojis(): GHResult<Map<String, String>> = getWithConfig("$apiUrl/emojis")
+    public suspend fun fetchAllEmojis(): GHResult<Map<String, String>> = getWithConfig("$API_URL/emojis")
 
     /**
      * Fetches the issue data for a specific issue in a given repository.
@@ -257,7 +261,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * - [HttpStatusCode.Gone]: The issue was deleted from a repository where the authenticated user has read access.
      */
     public suspend fun fetchIssue(owner: String, repository: String, issueNumber: Int): GHResult<GHIssue> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/issues/$issueNumber")
+        return getWithConfig("$API_URL/repos/$owner/$repository/issues/$issueNumber")
     }
 
     /**
@@ -272,7 +276,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * - [HttpStatusCode.NotFound]: The repository does not exist or the resource is not found.
      */
     public suspend fun fetchIssueAssignees(owner: String, repository: String): GHResult<List<GHUser>> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/assignees")
+        return getWithConfig("$API_URL/repos/$owner/$repository/assignees")
     }
 
     /**
@@ -291,7 +295,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         featured: Boolean? = null,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<List<GHLicense>> = getWithConfig("$apiUrl/licenses") {
+    ): GHResult<List<GHLicense>> = getWithConfig("$API_URL/licenses") {
         url.parameters.apply {
             featured?.let { append(ParameterConstants.featured, it.toString()) }
             append(ParameterConstants.perPage, perPage.toString())
@@ -311,7 +315,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * insufficient permissions.
      * - [HttpStatusCode.NotFound]: The license does not exist or the resource is not found.
      */
-    public suspend fun fetchLicense(license: String): GHResult<GHLicense> = getWithConfig("$apiUrl/licenses/$license")
+    public suspend fun fetchLicense(license: String): GHResult<GHLicense> = getWithConfig("$API_URL/licenses/$license")
 
     /**
      * Fetches the license information for a specific repository.
@@ -326,7 +330,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * if the request is successful.
      */
     public suspend fun fetchLicenseForRepository(owner: String, repository: String): GHResult<GHLicense> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/license")
+        return getWithConfig("$API_URL/repos/$owner/$repository/license")
     }
 
     public suspend fun createCommit(
@@ -334,7 +338,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         repository: String,
         commitMessage: String,
         tree: GHTree
-    ): GHResult<GHCommitResponse> = postWithConfig("$apiUrl/repos/$owner/$repository/git/commits") {
+    ): GHResult<GHCommitResponse> = postWithConfig("$API_URL/repos/$owner/$repository/git/commits") {
         @Serializable
         class CommitBody(
             val message: String,
@@ -362,7 +366,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         repository: String,
         baseTreeSha: String,
         treeItems: List<GHTree.Item>
-    ): GHResult<GHTree> = postWithConfig("$apiUrl/repos/$owner/$repository/git/trees") {
+    ): GHResult<GHTree> = postWithConfig("$API_URL/repos/$owner/$repository/git/trees") {
         @Serializable
         class TreeEntry(
             val path: String,
@@ -379,7 +383,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
     }
 
     public suspend fun fetchBranch(owner: String, repository: String, branchName: String): GHResult<GHBranch> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/branches/$branchName")
+        return getWithConfig("$API_URL/repos/$owner/$repository/branches/$branchName")
     }
 
     /**
@@ -394,11 +398,11 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * - [HttpStatusCode.NotFound]: The resource is not found.
      */
     public suspend fun fetchReference(owner: String, repository: String, reference: String): GHResult<GHRef> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/git/refs/$reference")
+        return getWithConfig("$API_URL/repos/$owner/$repository/git/refs/$reference")
     }
 
     public suspend fun fetchMatchingReferences(owner: String, repository: String, reference: String): GHResult<List<GHRef>> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/git/matching-refs/$reference")
+        return getWithConfig("$API_URL/repos/$owner/$repository/git/matching-refs/$reference")
     }
 
     public suspend fun createReference(
@@ -407,7 +411,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         ref: String,
         sha: String,
         key: String
-    ): GHResult<GHRef> = postWithConfig("$apiUrl/repos/$owner/$repository/git/refs") {
+    ): GHResult<GHRef> = postWithConfig("$API_URL/repos/$owner/$repository/git/refs") {
         @Serializable
         class CreateReferenceBody(
             val ref: String,
@@ -423,7 +427,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         ref: String,
         sha: String,
         force: Boolean = false
-    ): GHResult<GHRef> = patchWithConfig("$apiUrl/repos/$owner/$repository/git/refs/$ref") {
+    ): GHResult<GHRef> = patchWithConfig("$API_URL/repos/$owner/$repository/git/refs/$ref") {
         @Serializable
         class UpdateReferenceBody(
             val sha: String,
@@ -433,7 +437,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
     }
 
     public suspend fun deleteReference(owner: String, repository: String, ref: String): GHResult<Unit> {
-        return deleteWithConfig("$apiUrl/repos/$owner/$repository/git/refs/$ref")
+        return deleteWithConfig("$API_URL/repos/$owner/$repository/git/refs/$ref")
     }
 
     /**
@@ -444,7 +448,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * @return A [GHResult] containing a set of available GitIgnore templates (as [String])
      */
     public suspend fun fetchAllGitIgnoreTemplates(): GHResult<List<String>> {
-        return getWithConfig("$apiUrl/gitignore/templates")
+        return getWithConfig("$API_URL/gitignore/templates")
     }
 
     /**
@@ -456,10 +460,10 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
      * @return A [GHResult] containing the requested [GHGitIgnoreTemplate]
      */
     public suspend fun fetchGitIgnoreTemplate(name: String): GHResult<GHGitIgnoreTemplate> {
-        return getWithConfig("$apiUrl/gitignore/templates/$name")
+        return getWithConfig("$API_URL/gitignore/templates/$name")
     }
 
-    public suspend fun renderMarkdownDocument(text: String): GHResult<String> = postWithConfig("$apiUrl/markdown") {
+    public suspend fun renderMarkdownDocument(text: String): GHResult<String> = postWithConfig("$API_URL/markdown") {
         @Serializable
         class MarkdownDocumentBody(val text: String)
         setBody(MarkdownDocumentBody(text))
@@ -470,7 +474,7 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
         repository: String,
         perPage: Int = 30,
         page: Int = 1
-    ): GHResult<List<GHRelease>> = getWithConfig("$apiUrl/repos/$owner/$repository/releases") {
+    ): GHResult<List<GHRelease>> = getWithConfig("$API_URL/repos/$owner/$repository/releases") {
         url.parameters.apply {
             append(ParameterConstants.perPage, perPage.toString())
             append(ParameterConstants.page, page.toString())
@@ -478,34 +482,24 @@ public class GitHub @OptIn(ExperimentalSerializationApi::class) internal constru
     }
 
     public suspend fun fetchLatestRelease(owner: String, repository: String): GHResult<GHRelease> {
-        return getWithConfig("$apiUrl/repos/$owner/$repository/releases/latest")
+        return getWithConfig("$API_URL/repos/$owner/$repository/releases/latest")
     }
 
-    public suspend fun fetchRateLimit(): GHResult<GHRateLimitOverview> = getWithConfig("$apiUrl/rate_limit")
+    public suspend fun fetchRateLimit(): GHResult<GHRateLimitOverview> = getWithConfig("$API_URL/rate_limit")
 
     override fun close() {
         client.close()
     }
 
-    @ThreadLocal
     public companion object {
-        public const val apiUrl: String = "https://api.github.com"
-
-        private var INSTANCE: GitHub? = null
-
-        internal fun getInstance(): GitHub {
-            check(INSTANCE != null) { "GitHub is not initialized, call create() before using it." }
-            return INSTANCE!!
-        }
+        public const val API_URL: String = "https://api.github.com"
 
         public fun create(engine: HttpClientEngine, init: GitHubBuilder.() -> Unit = {}): GitHub {
-            INSTANCE = GitHubBuilder().apply(init).build(engine)
-            return INSTANCE!!
+            return GitHubBuilder().apply(init).build(engine)
         }
 
         public fun create(engine: HttpClientEngineFactory<*>, init: GitHubBuilder.() -> Unit = {}): GitHub {
-            INSTANCE = GitHubBuilder().apply(init).build(engine.create())
-            return INSTANCE!!
+            return GitHubBuilder().apply(init).build(engine.create())
         }
     }
 }

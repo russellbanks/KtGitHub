@@ -32,7 +32,7 @@ public class GHLicense internal constructor(
     }
 
     private suspend fun getFullLicenseData(): GHResult<GHLicense> {
-        return getWithConfig<GHLicense>("${GitHub.apiUrl}/$name").onSuccess {
+        return getWithConfig<GHLicense>("${GitHub.API_URL}/$name").onSuccess {
             key = it.key
             name = it.name
             spdxId = it.spdxId

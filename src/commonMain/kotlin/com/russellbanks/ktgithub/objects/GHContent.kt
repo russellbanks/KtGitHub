@@ -2,13 +2,14 @@ package com.russellbanks.ktgithub.objects
 
 import com.russellbanks.ktgithub.ApiException
 import com.russellbanks.ktgithub.GHResult
+import dev.drewhamilton.poko.Poko
 import io.ktor.client.request.setBody
 import io.ktor.util.decodeBase64Bytes
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public class GHContent(
+@Poko public class GHContent(
     public var type: Type,
     public var encoding: Encoding? = null,
     public var size: Int,
@@ -37,33 +38,11 @@ public class GHContent(
     }
 
     @Serializable
-    public class Links(
+    @Poko public class Links(
         public val git: String?,
         public val html: String?,
         public val self: String
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || this::class != other::class) return false
-
-            other as Links
-
-            if (git != other.git) return false
-            if (html != other.html) return false
-            return self == other.self
-        }
-
-        override fun hashCode(): Int {
-            var result = git?.hashCode() ?: 0
-            result = 31 * result + (html?.hashCode() ?: 0)
-            result = 31 * result + self.hashCode()
-            return result
-        }
-
-        override fun toString(): String {
-            return "Links(git=$git, html=$html, self='$self')"
-        }
-    }
+    )
 
     /**
      * Fetches and decodes the content of a file from the GitHub API.
