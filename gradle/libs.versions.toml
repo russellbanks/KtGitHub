@@ -2,7 +2,7 @@
 coroutines = "1.7.3"
 kotest = "5.8.0"
 kotest-extensions-ktor = "2.0.0"
-kotlin = "1.9.10"
+kotlin = "1.9.21"
 kotlinx-datetime = "0.4.1"
 kotlinx-serialization = "1.6.0"
 ktor = "2.3.6"
