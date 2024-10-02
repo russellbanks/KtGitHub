@@ -1,6 +1,6 @@
 [versions]
 coroutines = "1.8.1"
-kotest = "5.9.1"
+kotest = "6.0.0-LOCAL"
 kotest-extensions-ktor = "2.0.0"
 kotlin = "1.9.25"
 kotlinx-datetime = "0.6.1"
