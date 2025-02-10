@@ -1,5 +1,5 @@
 [versions]
-coroutines = "1.8.1"
+coroutines = "1.10.1"
 kotest = "5.9.1"
 kotest-extensions-ktor = "2.0.0"
 kotlin = "1.9.25"
