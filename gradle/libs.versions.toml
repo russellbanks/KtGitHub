@@ -7,7 +7,7 @@ kotlinx-datetime = "0.6.2"
 kotlinx-serialization = "1.6.3"
 ktor = "2.3.13"
 poko = "0.15.3"
-slf4j = "2.0.16"
+slf4j = "2.0.17"
 
 [libraries]
 kotest-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
