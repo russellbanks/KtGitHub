@@ -6,7 +6,7 @@ kotlin = "1.9.25"
 kotlinx-datetime = "0.6.2"
 kotlinx-serialization = "1.6.3"
 ktor = "2.3.13"
-poko = "0.15.3"
+poko = "0.18.2"
 slf4j = "2.0.17"
 
 [libraries]
